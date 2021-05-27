@@ -77,7 +77,7 @@ using (var streamReader = new StreamReader(file.FullName))
           Stream = streamReader.BaseStream
      };
 
-     var folderResponse = await documentsService.CreateMatterDocumentAsync(matterId, documentContent);
+     var documentResponse = await documentsService.CreateMatterDocumentAsync(matterId, documentContent);
 }
 ```
 
