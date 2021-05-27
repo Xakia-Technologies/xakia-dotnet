@@ -36,7 +36,7 @@ namespace Xakia.API.Client
         {
             if (!EnsurePath(path)) throw new InvalidPathException(nameof(path), "Path must start with a / character");
 
-            var uriBuider = new UriBuilder(_xakiaClient.XakiaClientOptions.ApiEndpoint);
+            var uriBuider = new UriBuilder(_xakiaClient.XakiaClientOptions.GetEnvironmentUrl());
             uriBuider.Path = path;
             return uriBuider.Uri.AbsoluteUri;
         }

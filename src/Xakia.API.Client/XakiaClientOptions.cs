@@ -13,17 +13,16 @@ namespace Xakia.API.Client
         /// <param name="apiEndpoint">The API Endpoint</param>
         /// <param name="tenantId">The Tenant Id</param>
         /// <param name="locationId">The Location Id</param>
-        public XakiaClientOptions(string clientId, string clientSecret, string apiEndpoint, Guid tenantId, Guid locationId)
+        public XakiaClientOptions(string clientId, string clientSecret, XakiaEnvironment xakiaEnvironment, Guid tenantId, Guid locationId)
         {
             _ = clientId ?? throw new ArgumentNullException(nameof(clientId));
             _ = clientSecret ?? throw new ArgumentNullException(nameof(clientSecret));
-            _ = apiEndpoint ?? throw new ArgumentNullException(nameof(apiEndpoint));
 
             ClientId = clientId;
             ClientSecret = clientSecret;
             TenantId = tenantId;
             LocationId = locationId;
-            ApiEndpoint = apiEndpoint;
+            XakiaEnvironment = xakiaEnvironment;
         }
 
         public string ClientId { get; set; }
@@ -34,7 +33,49 @@ namespace Xakia.API.Client
 
         public Guid LocationId { get; set; }
 
-        public string ApiEndpoint { get; set; }
+        public XakiaEnvironment XakiaEnvironment { get; set; }
 
+
+        public string GetEnvironmentUrl()
+        {
+            return $"https://xapi-{GetRegion(this.XakiaEnvironment)}.xakiatech.com";
+        }
+
+
+        public string GetTokenUrl()
+        {
+            return $"https://login{GetTokenRegion(this.XakiaEnvironment)}.xakiatech.com/connect/token";
+        }
+
+
+        private string GetRegion(XakiaEnvironment value) => value switch
+        {
+            XakiaEnvironment.Test => "test-us",
+            XakiaEnvironment.Staging => "staging-us",
+            XakiaEnvironment.Australia => "au",
+            XakiaEnvironment.Canada => "ca",
+            XakiaEnvironment.Netherlands => "nl",
+            XakiaEnvironment.UnitedKingdom => "uk",
+            XakiaEnvironment.UnitedStates => "us",
+            _ => "us"
+        };
+
+        private string GetTokenRegion(XakiaEnvironment value) => value switch
+        {
+            XakiaEnvironment.Test => "-test",
+            XakiaEnvironment.Staging => "-staging",
+            _ => ""
+        };
+    }
+
+    public enum XakiaEnvironment
+    {
+        Test,
+        Staging,
+        Australia,
+        Canada,
+        Netherlands,
+        UnitedKingdom,
+        UnitedStates
     }
 }

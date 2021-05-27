@@ -82,7 +82,7 @@ namespace Xakia.API.Client
         {
             if (Token == null || !Token.IsValid())
             {
-                var xakiaRequestMessage = new XakiaAuthenticationRequest(XakiaClientOptions, HttpMethod.Post, TokenUrl());
+                var xakiaRequestMessage = new XakiaAuthenticationRequest(XakiaClientOptions, HttpMethod.Post, XakiaClientOptions.GetTokenUrl());
                 Token = await ExecuteRequestAsync<AuthenticationResult>(xakiaRequestMessage.HttpRequestMessage, cancellationToken);
             }
 
@@ -98,20 +98,5 @@ namespace Xakia.API.Client
             return resultBody.FromJson<T>();
         }
 
-
-        private string TokenUrl()
-        {
-            // todo.. clean this up
-
-            if (XakiaClientOptions.ApiEndpoint.Contains("test"))
-            {
-                return "https://login-test.xakiatech.com/connect/token";
-            }
-            if (XakiaClientOptions.ApiEndpoint.Contains("staging"))
-            {
-                return "https://login-staging.xakiatech.com/connect/token";
-            }
-            return "https://login.xakiatech.com/connect/token";
-        }
     }
 }
