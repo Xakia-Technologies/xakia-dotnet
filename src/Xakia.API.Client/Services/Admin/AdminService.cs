@@ -25,7 +25,11 @@ namespace Xakia.API.Client.Services.Admin
             return await _xakiaClient.RequestAsync<List<DmsProviderResponse>>(HttpMethod.Get, GetUrl(BasePath, "/dmsproviders"), cancellationToken);
         }
 
-
+        /// <summary>
+        /// Returns a <c>LocationSettingsContract</c> with meta data for a Location.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<LocationSettingsContract> GetLocationSettingsAsync(CancellationToken cancellationToken = default)
         {
             return await _xakiaClient.RequestAsync<LocationSettingsContract>(HttpMethod.Get, GetUrl("/v2/locationsettings"), cancellationToken);

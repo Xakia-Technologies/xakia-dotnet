@@ -29,7 +29,7 @@ Instantiate a service with the `XakiaClient` instance.
 var matterService = new MattersService(xakiaClient);
 ```
 
-### Matter Examples
+### Matter API Examples
 
 #### Get a list of open matters
 ```csharp
@@ -38,8 +38,10 @@ var @params = new MattersQueryParams { Cancelled = false, Completed = false };
 var matters = await matterService.GetMattersListAsync(@params);
 ```
 
-### Document Examples
+### Document API Examples
+
 #### Get folders and documents on a Matter
+
 ```csharp
 var matterId = Guid.Parse("matterId");
 var adminService = new AdminService(xakiaClient);
@@ -49,6 +51,7 @@ var matterDocuments = await documentsService.GetMatterDocumentsAsync(matterId);
 ```
 
 #### Create a folder on a Matter
+
 ```csharp
 var adminService = new AdminService(xakiaClient);
 var dmsProviders = await adminService.GetDmsProvidersAsync();
@@ -59,6 +62,7 @@ var folderResponse = await documentsService.CreateMatterFolderAsync(matterId, fo
 ```
 
 #### Upload a document to a Matter
+
 ```csharp
 var adminService = new AdminService(xakiaClient);
 var dmsProviders = await adminService.GetDmsProvidersAsync();
@@ -75,4 +79,21 @@ using (var streamReader = new StreamReader(file.FullName))
 
      var folderResponse = await documentsService.CreateMatterDocumentAsync(matterId, documentContent);
 }
+```
+
+#### Rename a document on a Matter
+
+```csharp
+var adminService = new AdminService(xakiaClient);
+var dmsProviders = await adminService.GetDmsProvidersAsync();
+
+var documentsService = new DocumentsService(xakiaClient, dmsProviders.First().DmsProviderId);
+var matterDocuments = await documentsService.GetMatterDocumentsAsync(MatterId);
+var document = matterDocuments.Documents.First();
+var documentRequest = new DocumentNameRequest
+{
+     Name = $"Updated_{document.Filename}"
+};
+
+var documentResponse = await documentsService.RenameMatterDocumentAsync(MatterId, document.DocumentId, documentRequest);
 ```

@@ -41,15 +41,6 @@ namespace Xakia.API.Client.Documents
         }
 
 
-        public async Task<MatterDocuments> GetMatterDocumentDetailsAsync(Guid matterId, CancellationToken cancellationToken = default)
-        {
-            if (matterId == Guid.Empty) throw new ArgumentException("MatterId must be a valid Guid", nameof(matterId));
-
-            return await _xakiaClient.RequestAsync<MatterDocuments>(HttpMethod.Get, 
-                GetInstanceUrl(BasePath, "/documentdetails", DmsProviderId, matterId), cancellationToken);
-        }
-
-
         /// <summary>
         /// Creates a Folder on a Matter
         /// </summary>
@@ -60,6 +51,7 @@ namespace Xakia.API.Client.Documents
         public async Task<FolderIdentifiers> CreateMatterFolderAsync(Guid matterId, FolderMetadata folderMetadata, CancellationToken cancellationToken = default)
         {
             if (matterId == Guid.Empty) throw new ArgumentException("MatterId must be a valid Guid", nameof(matterId));
+            _ = folderMetadata ?? throw new ArgumentNullException(nameof(folderMetadata));
 
             return await _xakiaClient.RequestAsync<FolderIdentifiers, FolderMetadata>(HttpMethod.Post, 
                 GetInstanceUrl(BasePath, "/documents/folder", DmsProviderId, matterId), folderMetadata, cancellationToken);
@@ -80,7 +72,44 @@ namespace Xakia.API.Client.Documents
             if (folderId == Guid.Empty) throw new ArgumentException("FolderId must be a valid Guid", nameof(folderId));
 
             return await _xakiaClient.RequestAsync<FolderIdentifiers, FolderNameRequest>(HttpMethod.Put, 
-                GetInstanceUrl(BasePath, "/documents/folder/{3}/name", DmsProviderId, matterId, folderId), folderNameRequest, cancellationToken);
+                GetInstanceUrl(BasePath, "/documents/folder/{2}/name", DmsProviderId, matterId, folderId), folderNameRequest, cancellationToken);
+        }
+
+
+        /// <summary>
+        /// Renames an existing document on a Matter
+        /// </summary>
+        /// <param name="matterId"></param>
+        /// <param name="documentId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<DocumentIdentifiers> RenameMatterDocumentAsync(Guid matterId, Guid documentId, DocumentNameRequest documentNameRequest, CancellationToken cancellationToken = default)
+        {
+            if (matterId == Guid.Empty) throw new ArgumentException("MatterId must be a valid Guid", nameof(matterId));
+            if (documentId == Guid.Empty) throw new ArgumentException("DocumentId must be a valid Guid", nameof(documentId));
+            _ = documentNameRequest ?? throw new ArgumentNullException(nameof(documentNameRequest));
+
+            return await _xakiaClient.RequestAsync<DocumentIdentifiers, DocumentNameRequest>(HttpMethod.Put,
+                GetInstanceUrl(BasePath, "/document/{2}/name", DmsProviderId, matterId, documentId), documentNameRequest, cancellationToken);
+        }
+
+
+        /// <summary>
+        /// Update the description for a document on a Matter
+        /// </summary>
+        /// <param name="matterId"></param>
+        /// <param name="documentId"></param>
+        /// <param name="documentDescriptionRequest"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<DocumentIdentifiers> UpdateMatterDocumentDescriptionAsync(Guid matterId, Guid documentId, DocumentDescriptionRequest documentDescriptionRequest, CancellationToken cancellationToken = default)
+        {
+            if (matterId == Guid.Empty) throw new ArgumentException("MatterId must be a valid Guid", nameof(matterId));
+            if (documentId == Guid.Empty) throw new ArgumentException("DocumentId must be a valid Guid", nameof(documentId));
+            _ = documentDescriptionRequest ?? throw new ArgumentNullException(nameof(documentDescriptionRequest));
+
+            return await _xakiaClient.RequestAsync<DocumentIdentifiers, DocumentDescriptionRequest>(HttpMethod.Put,
+                GetInstanceUrl(BasePath, "/document/{2}/description", DmsProviderId, matterId, documentId), documentDescriptionRequest, cancellationToken);
         }
 
 
