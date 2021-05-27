@@ -4,10 +4,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9D6E80B6-3B4E-4741-A9D5-BA7763CD38DA}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xakia.API.Client", "src\Xakia.API.Client\Xakia.API.Client.csproj", "{6EF0489E-8409-409B-97F2-78AF238DD054}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xakia.API.Tests", "src\Xakia.API.Tests\Xakia.API.Tests.csproj", "{455385C2-4F4E-42F9-B977-F11EF2356156}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xakia.API.Tests", "src\Xakia.API.Tests\Xakia.API.Tests.csproj", "{455385C2-4F4E-42F9-B977-F11EF2356156}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

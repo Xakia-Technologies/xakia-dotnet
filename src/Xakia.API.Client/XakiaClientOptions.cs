@@ -13,7 +13,7 @@ namespace Xakia.API.Client
         /// <param name="apiEndpoint">The API Endpoint</param>
         /// <param name="tenantId">The Tenant Id</param>
         /// <param name="locationId">The Location Id</param>
-        public XakiaClientOptions(string clientId, string clientSecret, XakiaEnvironment xakiaEnvironment, Guid tenantId, Guid locationId)
+        public XakiaClientOptions(string clientId, string clientSecret, XakiaRegion xakiaEnvironment, Guid tenantId, Guid locationId)
         {
             _ = clientId ?? throw new ArgumentNullException(nameof(clientId));
             _ = clientSecret ?? throw new ArgumentNullException(nameof(clientSecret));
@@ -33,7 +33,7 @@ namespace Xakia.API.Client
 
         public Guid LocationId { get; set; }
 
-        public XakiaEnvironment XakiaEnvironment { get; set; }
+        public XakiaRegion XakiaEnvironment { get; set; }
 
 
         public string GetEnvironmentUrl()
@@ -48,29 +48,26 @@ namespace Xakia.API.Client
         }
 
 
-        private string GetRegion(XakiaEnvironment value) => value switch
+        private string GetRegion(XakiaRegion value) => value switch
         {
-            XakiaEnvironment.Test => "test-us",
-            XakiaEnvironment.Staging => "staging-us",
-            XakiaEnvironment.Australia => "au",
-            XakiaEnvironment.Canada => "ca",
-            XakiaEnvironment.Netherlands => "nl",
-            XakiaEnvironment.UnitedKingdom => "uk",
-            XakiaEnvironment.UnitedStates => "us",
+            XakiaRegion.Staging => "staging-us",
+            XakiaRegion.Australia => "au",
+            XakiaRegion.Canada => "ca",
+            XakiaRegion.Netherlands => "nl",
+            XakiaRegion.UnitedKingdom => "uk",
+            XakiaRegion.UnitedStates => "us",
             _ => "us"
         };
 
-        private string GetTokenRegion(XakiaEnvironment value) => value switch
+        private string GetTokenRegion(XakiaRegion value) => value switch
         {
-            XakiaEnvironment.Test => "-test",
-            XakiaEnvironment.Staging => "-staging",
+            XakiaRegion.Staging => "-staging",
             _ => ""
         };
     }
 
-    public enum XakiaEnvironment
+    public enum XakiaRegion
     {
-        Test,
         Staging,
         Australia,
         Canada,
