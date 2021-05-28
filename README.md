@@ -38,6 +38,13 @@ var @params = new MattersQueryParams { Cancelled = false, Completed = false };
 var matters = await matterService.GetMattersListAsync(@params);
 ```
 
+#### Get a matter by Id
+```csharp
+var matterId = Guid.Parse("matterId");
+var matterService = new MattersService(xakiaClient);
+var matter = await matterService.GetMatterAsync(matterId);
+```
+
 ### Document API Examples
 
 #### Get folders and documents on a Matter

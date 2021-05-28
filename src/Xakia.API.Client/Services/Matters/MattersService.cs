@@ -11,7 +11,7 @@ namespace Xakia.API.Client.Services.Matters
 {
     public class MattersService : Service
     {
-        public override string BasePath { get; } = "/v2/matter/{matterId}";
+        public override string BasePath { get; } = "/v2/matter/{0}";
 
         public MattersService(IXakiaClient xakiaClient) : base(xakiaClient) { }
 
@@ -25,6 +25,18 @@ namespace Xakia.API.Client.Services.Matters
         {
             return await _xakiaClient.RequestAsync<List<MatterListContract>>(HttpMethod.Get, 
                 GetUrl("/v2/matters/list"), mattersQueryParams, cancellationToken);
+        }
+
+
+        /// <summary>
+        /// Returns a <c>MatterContract</c> from it's id
+        /// </summary>
+        /// <param name="matterId">Guid Matter Id</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A <c>MatterContract</c></returns>
+        public async Task<MatterContract> GetMatterAsync(Guid matterId, CancellationToken cancellationToken = default)
+        {
+            return await _xakiaClient.RequestAsync<MatterContract>(HttpMethod.Get, GetInstanceUrl(BasePath, matterId), cancellationToken);
         }
 
     }
