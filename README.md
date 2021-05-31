@@ -68,6 +68,18 @@ var folder = new FolderMetadata { Name = "FolderName" };
 var folderResponse = await documentsService.CreateMatterFolderAsync(matterId, folder);
 ```
 
+#### Create a sub-folder on a Matter
+
+```csharp
+var adminService = new AdminService(xakiaClient);
+var dmsProviders = await adminService.GetDmsProvidersAsync();
+var documentsService = new DocumentsService(xakiaClient, dmsProviders.First().DmsProviderId);
+var matterDocuments = await documentsService.GetMatterDocumentsAsync(matterId);
+
+var folder = new FolderMetadata { Name = "SubFolderName", ParentId = matterDocuments.Folders.First().FolderId };
+var folderResponse = await documentsService.CreateMatterFolderAsync(matterId, folder);
+```
+
 #### Upload a document to a Matter
 
 ```csharp
@@ -87,6 +99,33 @@ using (var streamReader = new StreamReader(file.FullName))
      var documentResponse = await documentsService.CreateMatterDocumentAsync(matterId, documentContent);
 }
 ```
+
+#### Upload a document to a sub-folder on a Matter
+
+```csharp
+var adminService = new AdminService(xakiaClient);
+var dmsProviders = await adminService.GetDmsProvidersAsync();
+var documentsService = new DocumentsService(xakiaClient, dmsProviders.First().DmsProviderId);
+ var matterDocuments = await documentsService.GetMatterDocumentsAsync(matterId);
+
+var file = new FileInfo("pathOfDocument");
+using (var streamReader = new StreamReader(file.FullName))
+{
+     var documentContent = new DocumentContent
+     {
+          Filename = file.Name,
+          Stream = streamReader.BaseStream
+     };
+      var documentMetaData = new DocumentMetadata
+     {
+         Description = "Document uploaded via API",
+         FolderId = matterDocuments.Folders.First().FolderId.ToString()
+     };
+
+     var documentResponse = await documentsService.CreateMatterDocumentAsync(matterId, documentMetaData, documentContent);
+}
+```
+
 
 #### Rename a document on a Matter
 

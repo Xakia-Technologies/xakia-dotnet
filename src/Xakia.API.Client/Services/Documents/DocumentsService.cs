@@ -128,6 +128,7 @@ namespace Xakia.API.Client.Documents
             _ = documentMetadata.Description ?? throw new ArgumentNullException(nameof(documentMetadata.Description));
 
             if (string.IsNullOrWhiteSpace(documentMetadata.FileName)) documentMetadata.FileName = documentContent.Filename;
+            if (documentMetadata.EncryptionKeyId == Guid.Empty) documentMetadata.EncryptionKeyId = (await GetLocationSetting()).CurrentEncryptionKeyId;
 
             return await _xakiaClient.RequestAsyncWithFile<DocumentIdentifiers>(HttpMethod.Post,
                GetInstanceUrl(BasePath, "/document", DmsProviderId, matterId), documentMetadata, documentContent, cancellationToken);
