@@ -39,5 +39,23 @@ namespace Xakia.API.Client.Services.Matters
             return await _xakiaClient.RequestAsync<MatterContract>(HttpMethod.Get, GetInstanceUrl(BasePath, matterId), cancellationToken);
         }
 
+
+        /// <summary>
+        /// Create a Legal Request from a <c>XakiageRequestTypeDetailResponse</c> template
+        /// </summary>
+        /// <param name="legalRequestId"></param>
+        /// <param name="legalRequest"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<Guid> CreateLegalRequestAsync(Guid legalRequestId, XakiageLegalRequest legalRequest, CancellationToken cancellationToken = default)
+        {
+            if (legalRequestId == Guid.Empty) throw new ArgumentException("Legal Request Id must be a valid Guid", nameof(legalRequestId));
+            _ = legalRequest ?? throw new ArgumentNullException(nameof(legalRequest));
+
+            await _xakiaClient.RequestAsync(HttpMethod.Post, GetInstanceUrl(BasePath, legalRequestId), legalRequest, cancellationToken);
+            return legalRequestId;
+        }
     }
 }
