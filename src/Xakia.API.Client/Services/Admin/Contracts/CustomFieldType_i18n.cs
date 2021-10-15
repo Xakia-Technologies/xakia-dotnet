@@ -30,10 +30,12 @@ namespace Xakia.API.Client.Services.Admin.Contracts
         /// </summary>
         CustomText,
         /// <summary>
-        /// Number only. I asked if she wanted both  integers and decimal and she said "one field that allows for numbers up to 2 decimal places". 
+        /// Number only. 
         /// </summary>
         Numeric,
-
+        /// <summary>
+        /// A URL link
+        /// </summary>
         HtmlLink
     }
 }
