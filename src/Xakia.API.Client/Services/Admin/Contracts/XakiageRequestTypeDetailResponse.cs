@@ -17,7 +17,6 @@ namespace Xakia.API.Client.Services.Admin.Contracts
             Divisions = new List<XakiageEntityResponse>();
             Categories = new List<XakiageEntityResponse>();
             TeamMembers = new List<XakiageTeamMemberResponse>();
-            CustomFields = new List<CustomFieldResponse>();
             Template = new XakiageTemplateResponse();
             Fields = new List<FieldResponse>();
             DocumentFields = new List<XakiageDocumentResponse>();
@@ -81,7 +80,7 @@ namespace Xakia.API.Client.Services.Admin.Contracts
         /// <summary>
         /// Returns a list of Custom Fields on the Legal Request
         /// </summary>
-        public List<CustomFieldResponse> CustomFields { get; set; }
+        public XakiageCustomFieldsContract LegalRequestCustomFields { get; set; }
 
         /// <summary>
         /// Returns the template values for a Legal Request
@@ -181,55 +180,6 @@ namespace Xakia.API.Client.Services.Admin.Contracts
 
     }
 
-    /// <summary>
-    /// Represents a Legal Request Custom field
-    /// </summary>
-    public class CustomFieldResponse
-    {
-        /// <summary>
-        /// The custom field unqiue Id
-        /// </summary>
-        public Guid CustomFieldId { get; set; }
-
-        /// <summary>
-        /// The custom field control type
-        /// </summary>
-        /// <remarks>
-        /// 1 = Checkbox, 2 = Text field, 3 = Date field, 4 = Dropdown list
-        /// </remarks>
-        public int ControlType { get; set; }
-
-        /// <summary>
-        /// Any predefined selections for a ControlType. Only valid when the 
-        /// <see cref="ControlType"/> is 1 or 4
-        /// </summary>
-        public string Selections { get; set; }
-
-        /// <summary>
-        /// The Custom Field label
-        /// </summary>
-        public string Label { get; set; }
-
-        /// <summary>
-        /// Returns if the custom field is active
-        /// </summary>
-        public bool IsActive { get; set; }
-
-        /// <summary>
-        /// Returns any help information to display on the custom field
-        /// </summary>
-        public string Instructions { get; set; }
-
-        /// <summary>
-        /// Returns if the field is mandatory
-        /// </summary>
-        public bool Mandatory { get; set; }
-
-        /// <summary>
-        /// Sort Order of custom fields
-        /// </summary>
-        public int SortOrder { get; set; }
-    }
 
     /// <summary>
     /// Represents a Legal Request meta data entity
