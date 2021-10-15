@@ -60,6 +60,14 @@ namespace Xakia.API.Client
             return await ExecuteRequestAsync<T>(xakiaRequestMessage.HttpRequestMessage, cancellationToken);
         }
 
+        public async Task RequestAsync<TContract>(HttpMethod method, string path, TContract payload, CancellationToken cancellationToken = default) where TContract : IContract
+        {
+            Token = await AuthenticateAsync();
+            var xakiaRequestMessage = new XakiaRequest(XakiaClientOptions, method, path, Token, payload);
+            await ExecuteRequestAsync(xakiaRequestMessage.HttpRequestMessage, cancellationToken);
+        }
+
+
         public async Task<T> RequestAsyncWithFile<T>(HttpMethod method, string path, DocumentMetadata documentMetadata, DocumentContent documentContent, CancellationToken cancellationToken = default) 
         {
             Token = await AuthenticateAsync();
@@ -98,5 +106,12 @@ namespace Xakia.API.Client
             return resultBody.FromJson<T>();
         }
 
+
+
+        private async Task ExecuteRequestAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken = default)
+        {
+            var result = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
+            result.EnsureSuccessStatusCode();
+        }
     }
 }

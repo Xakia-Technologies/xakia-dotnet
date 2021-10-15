@@ -11,6 +11,9 @@ using Xakia.API.Client.Services.Documents.Contracts;
 
 namespace Xakia.API.Client.Documents
 {
+    /// <summary>
+    /// Client service for interacting with the Xakia documents service
+    /// </summary>
     public class DocumentsService : Service
     {
         public override string BasePath { get; } = "/v2/dms/{0}/matter/{1}";
@@ -32,6 +35,7 @@ namespace Xakia.API.Client.Documents
         /// <param name="matterId">The Matter Id</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public async Task<MatterDocuments> GetMatterDocumentsAsync( Guid matterId, CancellationToken cancellationToken = default)
         {
             if (matterId == Guid.Empty) throw new ArgumentException("MatterId must be a valid Guid", nameof(matterId));
