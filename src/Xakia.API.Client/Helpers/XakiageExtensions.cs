@@ -26,7 +26,7 @@ namespace Xakia.API.Client.Helpers
 
             // required fields
             validationEvents.AddRange(GetLegalRequestFields(legalRequest, true).Where(f => !IsValid(f.Value))
-                .Select(f => new LegalInkakeRequestValidationEvent { Property = f.Key, Message = $"{f.Key} is a required field" }));
+                .Select(f => new LegalInkakeRequestValidationEvent { Property = f.Key, Message = $"'{f.Key}' is a required field" }));
 
             // required custom fields
             if (legalRequest.LegalRequestType.LegalRequestCustomFields != null)
@@ -34,13 +34,13 @@ namespace Xakia.API.Client.Helpers
                 var missingCustomFields = legalRequest.LegalRequestType.LegalRequestCustomFields
                     .CustomFieldXakiageRequestTypeAssignments_i18n
                     .Where(cf => cf.Required).Select(cf => cf.CustomFieldDefinitionId)
-                    .Except(legalRequest.CustomFields.Where(f => string.IsNullOrWhiteSpace(f.Value)).Select(f => f.Id));
+                    .Except(legalRequest.CustomFields.Where(f => !string.IsNullOrWhiteSpace(f.Value)).Select(f => f.Id));
 
                 if (missingCustomFields.Any())
                     validationEvents.AddRange(
                         legalRequest.LegalRequestType.LegalRequestCustomFields.CustomFieldDefinitions_i18n
                         .Where(d => missingCustomFields.Contains(d.CustomFieldDefinitionId))
-                        .Select(d => new LegalInkakeRequestValidationEvent { Property = d.CustomFieldDefinitionId.ToString(), Message = $"Required custom field {d.Label.First().Value}, definitionId {d.CustomFieldDefinitionId} is missing a value." })
+                        .Select(d => new LegalInkakeRequestValidationEvent { Property = d.CustomFieldDefinitionId.ToString(), Message = $"Required custom field '{d.Label.First().Value}', definitionId '{d.CustomFieldDefinitionId}' is missing a value." })
                     );
             }
 
@@ -65,13 +65,26 @@ namespace Xakia.API.Client.Helpers
             var requiredFields = legalRequest.LegalRequestType.Fields.Where(f => f.Mandatory && f.Display);
             var fieldList = GetLegalRequestFields(legalRequest, false);
 
-            list.AddRange(requiredFields.Select(rf => rf.Name)
+            list.AddRange(requiredFields.Select(rf => MapRequiredFieldName(rf.Name))
                 .Except(fieldList.Where(f => IsValid(f.Value)).Select(f => f.Key))
-                .Select(f => new LegalInkakeRequestValidationEvent { Property = f, Message = $"{f} is a required field." })
+                .Select(f => new LegalInkakeRequestValidationEvent { Property = f, Message = $"'{f}' is a required field." })
             );
 
             return list;
         }
+
+
+
+        private static string MapRequiredFieldName(string fieldName) => fieldName switch
+        {
+            "Category" => "CategoryId",
+            "SubCategory" => "SubCategoryId",
+            "Division" => "DivisionId",
+            "SubDivision" => "SubDivisionId",
+            "DateRequired" => "Required",
+            "SendTo" => "SendToMatterManager",
+            _ => fieldName
+        };
 
 
         private static bool IsValid(object value)

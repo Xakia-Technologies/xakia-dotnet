@@ -16,7 +16,6 @@ namespace Xakia.API.Client.Services.Matters.Contracts
     public class XakiageLegalRequest : IContract
     {
         
-
         // Serialization ctor
         public XakiageLegalRequest() { }
 
@@ -31,6 +30,11 @@ namespace Xakia.API.Client.Services.Matters.Contracts
 
             this.LegalRequestType = legalRequestType;
             this.RequestTypeId = LegalRequestType.XakiageRequestTypeId;
+            this.RequestName = LegalRequestType.Name;
+            this.Size = LegalRequestType.Template.Size;
+            this.Risk = LegalRequestType.Template.Risk;
+            this.Complexity = LegalRequestType.Template.Complexity;
+            this.Strategy = LegalRequestType.Template.Strategy;
 
             SetupCustomFields();
         }
@@ -152,6 +156,7 @@ namespace Xakia.API.Client.Services.Matters.Contracts
         /// </summary>
         public ICollection<string> DocumentLinks { get; set; } = new List<string>();
 
+
         
         /// <summary>
         /// To check whether this legal request is generated from automation
@@ -163,26 +168,31 @@ namespace Xakia.API.Client.Services.Matters.Contracts
         /// </summary>
         public string Resourcing { get; set; } = "internal";
 
-        /// <inheritdoc/>
-        public bool CustomFieldVersion2Validation { get; set; }
 
         /// <summary>
         /// Id of the language used when submitting this request
         /// </summary>
         public string LanguageId { get; set; } = "en";
 
+        public bool CustomFieldVersion2Validation { get; set; } = true;
 
         private void SetupCustomFields()
         {
             if (LegalRequestType.LegalRequestCustomFields != null)
             {
                 var customFieldCount = LegalRequestType.LegalRequestCustomFields.CustomFieldXakiageRequestTypeAssignments_i18n.Where(f => f.IsActive).Count();
-                customFieldCount = customFieldCount > 0 ? customFieldCount - 1 : 0;
 
                 this.CustomFields = new XakiageCustomFieldContract[customFieldCount];
+                var index = 0;
                 foreach (var customField in LegalRequestType.LegalRequestCustomFields.CustomFieldXakiageRequestTypeAssignments_i18n.Where(f => f.IsActive))
                 {
-                    this.CustomFields[0] = new XakiageCustomFieldContract { Id = customField.CustomFieldDefinitionId };
+                    var customFieldDefintion = LegalRequestType.LegalRequestCustomFields.CustomFieldDefinitions_i18n.FirstOrDefault(cfd => cfd.CustomFieldDefinitionId == customField.CustomFieldDefinitionId); 
+                    this.CustomFields[index++] = new XakiageCustomFieldContract 
+                    { 
+                        Id = customField.CustomFieldDefinitionId, 
+                        Question = customFieldDefintion.Label.FirstOrDefault().Value,
+                        Type = ((int)customFieldDefintion.Type).ToString()
+                    };
                 }
             }
         }

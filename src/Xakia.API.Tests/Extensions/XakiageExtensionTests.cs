@@ -80,7 +80,8 @@ namespace Xakia.API.Tests.Extensions
         public void ValidateLegalRequestOptionalRequiredFields()
         {
             var legalRequestType = new XakiageRequestTypeDetailResponse { XakiageRequestTypeId = Guid.NewGuid() };
-            legalRequestType.Fields.Add(new FieldResponse { Display = true, Mandatory = true, Name = nameof(XakiageLegalRequest.CategoryId) });
+            legalRequestType.Fields.Add(new FieldResponse { Display = true, Mandatory = true, Name = "Category" });
+            legalRequestType.Fields.Add(new FieldResponse { Display = true, Mandatory = true, Name = "DateRequired" });
             var legalRequest = GetXakiageLegal(legalRequestType);
             legalRequest.CategoryId = Guid.NewGuid();
 

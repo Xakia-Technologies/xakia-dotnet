@@ -64,7 +64,7 @@ namespace Xakia.API.Client.Services.Matters
             var validationEvents = legalRequest.Validate();
             if (validationEvents.Any()) throw new LegalInkakeRequestValidationException("Legal Intake request failed validation.",validationEvents);
 
-            await _xakiaClient.RequestAsync(HttpMethod.Post, GetInstanceUrl(BasePath, legalRequestTypeId), legalRequest, cancellationToken);
+            await _xakiaClient.RequestAsync(HttpMethod.Post, GetInstanceUrl("/v2/xakiagematter/{0}", legalRequestTypeId), legalRequest, cancellationToken);
             return legalRequestTypeId;
         }
     }
