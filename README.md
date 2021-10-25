@@ -11,7 +11,6 @@ The official .net library for Xakia
 
 ### Create a XakiaClient
 
-var xakiaClient = new XakiaClient(new XakiaClientOptions("clientId",
 A `XakiaClient` is the foundation for API calls. Create a client using a new `XakiaClientOptions` with your API details:
 
 ```csharp

@@ -132,7 +132,7 @@ namespace Xakia.API.Client
         /// <param name="xakiaRequest">The <c>XakiaRequest</c> for the Request</param>
         /// <param name="documentContent">The document content</param>
         /// <param name="documentMetadata">The document metadata</param>
-        public static void AddFileContent(this XakiaRequest xakiaRequest, DocumentContent documentContent, DocumentMetadata documentMetadata) 
+        public static void AddDocumentContent(this XakiaRequest xakiaRequest, DocumentContent documentContent, DocumentMetadata documentMetadata) 
         {
             var content = new MultipartFormDataContent();
             var bytes = ReadStream(documentContent.Stream);
@@ -153,6 +153,21 @@ namespace Xakia.API.Client
 
             xakiaRequest.HttpRequestMessage.Content = content;
         }
+
+        public static void AddDocumentContent(this XakiaRequest xakiaRequest, ICollection<DocumentContent> documentContents)
+        {
+            var content = new MultipartFormDataContent();
+            foreach(var documentContent in documentContents)
+            { 
+                var bytes = ReadStream(documentContent.Stream);
+                var fileContent = new ByteArrayContent(bytes, 0, bytes.Length);
+                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MapContentType(documentContent.Filename));
+                content.Add(fileContent, "Files", documentContent.Filename);
+            }
+
+            xakiaRequest.HttpRequestMessage.Content = content;
+        }
+
 
 
         public static byte[] ReadStream(Stream input)

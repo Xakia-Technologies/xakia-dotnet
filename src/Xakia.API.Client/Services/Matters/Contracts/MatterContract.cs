@@ -513,7 +513,6 @@ namespace Xakia.API.Client.Services.Matters.Contracts
 
             /// <summary>
             /// Value of the field.
-            /// For checkboxes, Adrian was passing a semi-colon delimited string of values selected. Eg "ab;ac;ad". 
             /// </summary>
             public string Value { get; set; }
         }

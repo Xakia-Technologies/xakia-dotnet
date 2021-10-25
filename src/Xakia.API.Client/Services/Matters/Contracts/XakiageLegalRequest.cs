@@ -1,7 +1,12 @@
+using Newtonsoft.Json;
 using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reflection;
+using Xakia.API.Client.Exceptions;
+using Xakia.API.Client.Services.Admin.Contracts;
 
 namespace Xakia.API.Client.Services.Matters.Contracts
 {
@@ -10,6 +15,36 @@ namespace Xakia.API.Client.Services.Matters.Contracts
     /// </summary>
     public class XakiageLegalRequest : IContract
     {
+        
+        // Serialization ctor
+        public XakiageLegalRequest() { }
+
+        /// <summary>
+        /// Constructs an instance <c>XakiageLegalRequest</c> with it's corresponding
+        /// <c>XakiageRequestTypeDetailResponse</c> that defines the request.
+        /// </summary>
+        /// <param name="legalRequestType"></param>
+        public XakiageLegalRequest(XakiageRequestTypeDetailResponse legalRequestType)
+        {
+            _ = legalRequestType ?? throw new ArgumentNullException(nameof(legalRequestType));
+
+            this.LegalRequestType = legalRequestType;
+            this.RequestTypeId = LegalRequestType.XakiageRequestTypeId;
+            this.RequestName = LegalRequestType.Name;
+            this.Size = LegalRequestType.Template.Size;
+            this.Risk = LegalRequestType.Template.Risk;
+            this.Complexity = LegalRequestType.Template.Complexity;
+            this.Strategy = LegalRequestType.Template.Strategy;
+
+            SetupCustomFields();
+        }
+
+        /// <summary>
+        /// The definition for the Legal Request
+        /// </summary>
+        [JsonIgnore]
+        public XakiageRequestTypeDetailResponse LegalRequestType { get; private set; }
+
         /// <summary>
         /// Unique ID of the Xakiage Request Type.
         /// </summary>
@@ -121,10 +156,6 @@ namespace Xakia.API.Client.Services.Matters.Contracts
         /// </summary>
         public ICollection<string> DocumentLinks { get; set; } = new List<string>();
 
-        /// <summary>
-        /// Custom fields.
-        /// </summary>
-        public CustomFieldPayload CustomFieldPayload { get; set; }
 
         
         /// <summary>
@@ -137,13 +168,35 @@ namespace Xakia.API.Client.Services.Matters.Contracts
         /// </summary>
         public string Resourcing { get; set; } = "internal";
 
-        /// <inheritdoc/>
-        public bool CustomFieldVersion2Validation { get; set; }
 
         /// <summary>
         /// Id of the language used when submitting this request
         /// </summary>
         public string LanguageId { get; set; } = "en";
+
+        public bool CustomFieldVersion2Validation { get; set; } = true;
+
+        private void SetupCustomFields()
+        {
+            if (LegalRequestType.LegalRequestCustomFields != null)
+            {
+                var customFieldCount = LegalRequestType.LegalRequestCustomFields.CustomFieldXakiageRequestTypeAssignments_i18n.Where(f => f.IsActive).Count();
+
+                this.CustomFields = new XakiageCustomFieldContract[customFieldCount];
+                var index = 0;
+                foreach (var customField in LegalRequestType.LegalRequestCustomFields.CustomFieldXakiageRequestTypeAssignments_i18n.Where(f => f.IsActive))
+                {
+                    var customFieldDefintion = LegalRequestType.LegalRequestCustomFields.CustomFieldDefinitions_i18n.FirstOrDefault(cfd => cfd.CustomFieldDefinitionId == customField.CustomFieldDefinitionId); 
+                    this.CustomFields[index++] = new XakiageCustomFieldContract 
+                    { 
+                        Id = customField.CustomFieldDefinitionId, 
+                        Question = customFieldDefintion.Label.FirstOrDefault().Value,
+                        Type = ((int)customFieldDefintion.Type).ToString()
+                    };
+                }
+            }
+        }
+
     }
 }
 

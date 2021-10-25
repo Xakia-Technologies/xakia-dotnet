@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Xakia.API.Client.Exceptions;
+using Xakia.API.Client.Helpers;
 using Xakia.API.Client.Services.Matters.Contracts;
 using Xakia.API.Client.Services.Matters.Queries;
 
@@ -58,7 +61,10 @@ namespace Xakia.API.Client.Services.Matters
             if (legalRequestTypeId == Guid.Empty) throw new ArgumentException("Legal Request Type Id must be a valid Guid", nameof(legalRequestTypeId));
             _ = legalRequest ?? throw new ArgumentNullException(nameof(legalRequest));
 
-            await _xakiaClient.RequestAsync(HttpMethod.Post, GetInstanceUrl(BasePath, legalRequestTypeId), legalRequest, cancellationToken);
+            var validationEvents = legalRequest.Validate();
+            if (validationEvents.Any()) throw new LegalInkakeRequestValidationException("Legal Intake request failed validation.",validationEvents);
+
+            await _xakiaClient.RequestAsync(HttpMethod.Post, GetInstanceUrl("/v2/xakiagematter/{0}", legalRequestTypeId), legalRequest, cancellationToken);
             return legalRequestTypeId;
         }
     }
