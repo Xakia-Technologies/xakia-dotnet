@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Xakia.API.Client.Exceptions;
+using Xakia.API.Client.Helpers;
 using Xakia.API.Client.Services.Admin.Contracts;
 
 namespace Xakia.API.Client.Services.Admin
@@ -31,6 +34,9 @@ namespace Xakia.API.Client.Services.Admin
         /// <summary>
         /// Returns a <c>LocationSettingsContract</c> with meta data for a Location.
         /// </summary>
+        /// <remarks>
+        /// Meta data includes: Categories, Divsions, Groups, Features, External Firms and Custom fields
+        /// </remarks>
         /// <param name="cancellationToken">A <c>CancellationToken</c></param>
         /// <returns>A <c>LocationSettingsContract</c> object of location settings</returns>
         public async Task<LocationSettingsContract> GetLocationSettingsAsync(CancellationToken cancellationToken = default)
@@ -64,6 +70,24 @@ namespace Xakia.API.Client.Services.Admin
             return requestType;
         }
 
+
+        /// <summary>
+        /// Create or update a Custom Field and associated items
+        /// </summary>
+        /// <param name="customFieldCommand">The custom field content </param>
+        /// <param name="cancellationToken">A <c>CancellationToken</c></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Thrown if the <c>CreateOrUpdateCustomFieldDefinition_i18nCommand</c> command is null</exception>
+        /// <exception cref="RequestValidationEvent">Thrown if the >CreateOrUpdateCustomFieldDefinition_i18nCommand</c> command  fails validation</exception>
+        public async Task<CommandResult> CreateCustomFieldsAsync(CreateOrUpdateCustomFieldDefinition_i18nCommand customFieldCommand, CancellationToken cancellationToken = default)
+        {
+            _ = customFieldCommand ?? throw new ArgumentNullException(nameof(customFieldCommand));
+            
+            var validationEvents = customFieldCommand.Validate();
+            if (validationEvents.Any()) throw new RequestValidationException("Custom field request failed validation.", validationEvents);
+
+            return await _xakiaClient.RequestAsync<CommandResult, CreateOrUpdateCustomFieldDefinition_i18nCommand>(HttpMethod.Post, GetUrl("/v2/customfield_i18n"), customFieldCommand, cancellationToken);
+        }
     }
 
 }

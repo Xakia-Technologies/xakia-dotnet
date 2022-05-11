@@ -11,7 +11,7 @@ using Xakia.API.Client.Services.Matters.Contracts;
 
 namespace Xakia.API.Client.Helpers
 {
-    public static class XakiageExtensions
+    public static class XakiaExtensions
     {
 
         /// <summary>
@@ -73,6 +73,18 @@ namespace Xakia.API.Client.Helpers
             return list;
         }
 
+        /// <summary>
+        /// Validate the command has all required values
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public static IEnumerable<RequestValidationEvent> Validate(this CreateOrUpdateCustomFieldDefinition_i18nCommand command)
+        {
+            if (command.Type != CustomFieldType_i18n.CustomText && command.CustomText != null) yield return new RequestValidationEvent { Property = nameof(command.Type), Message = "If the custom field type is not Custom Text, then the Custom Text property must be null"} ;
+            if (command.Type == CustomFieldType_i18n.CustomText && command.CustomText == null) yield return new RequestValidationEvent { Property = nameof(command.Type), Message = "If the custom field type is Custom Text, you must pass custom text properties" };
+            if (command.CustomFieldDefinitionId == Guid.Empty) yield return new RequestValidationEvent { Property = nameof(command.CustomFieldDefinitionId), Message = "CustomFieldDefinitionId is a required field, user Guid.NewGuid() for new custom fields" };
+
+        }
 
 
         private static string MapRequiredFieldName(string fieldName) => fieldName switch
