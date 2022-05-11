@@ -79,7 +79,7 @@ namespace Xakia.API.Client.Services.Admin
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the <c>CreateOrUpdateCustomFieldDefinition_i18nCommand</c> command is null</exception>
         /// <exception cref="RequestValidationEvent">Thrown if the >CreateOrUpdateCustomFieldDefinition_i18nCommand</c> command  fails validation</exception>
-        public async Task<CommandResult> CreateCustomFieldsAsync(CreateOrUpdateCustomFieldDefinition_i18nCommand customFieldCommand, CancellationToken cancellationToken = default)
+        public async Task<CommandResult> CreateOrUpdateCustomFieldAsync(CreateOrUpdateCustomFieldDefinition_i18nCommand customFieldCommand, CancellationToken cancellationToken = default)
         {
             _ = customFieldCommand ?? throw new ArgumentNullException(nameof(customFieldCommand));
             
