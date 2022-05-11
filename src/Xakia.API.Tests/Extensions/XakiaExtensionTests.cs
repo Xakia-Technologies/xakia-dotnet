@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Xakia.API.Tests.Extensions
 {
-    public class XakiageExtensionTests
+    public class XakiaExtensionTests
     {
         [Fact]
         public void ValidateLegalRequestTypeSet_ThrowsArgumentNull()
@@ -101,6 +101,30 @@ namespace Xakia.API.Tests.Extensions
             var sut = legalRequest.Validate();
             Assert.Contains(sut, e => e.Property == nameof(XakiageLegalRequest.CategoryId));
         }
+
+        [Fact]
+        public void ValidateCreateCustomFields()
+        {
+            var customField = new CreateOrUpdateCustomFieldDefinition_i18nCommand { CustomFieldDefinitionId = Guid.NewGuid(), Type = CustomFieldType_i18n.CustomText };
+            customField.CustomText = new LocalisedString[1];
+            customField.CustomText[0] = new LocalisedString { SupportedLanguageCode = "en", Value = "Test" };
+
+            var sut = customField.Validate();
+            Assert.False(sut.Any());
+        }
+
+    
+
+        [Fact]
+        public void ValidateCreateCustomFields_Invalid()
+        {
+            var customField = new CreateOrUpdateCustomFieldDefinition_i18nCommand { CustomFieldDefinitionId = Guid.Empty, Type = CustomFieldType_i18n.CustomText};
+
+            var sut = customField.Validate();
+            Assert.True(sut.Any());
+
+        }
+    
 
         private XakiageLegalRequest GetXakiageLegal(XakiageRequestTypeDetailResponse legalRequestType)
         {

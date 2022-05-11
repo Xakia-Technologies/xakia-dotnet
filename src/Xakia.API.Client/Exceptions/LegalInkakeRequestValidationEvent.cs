@@ -1,10 +1,7 @@
 ﻿namespace Xakia.API.Client.Exceptions
 {
-    public class LegalInkakeRequestValidationEvent
+    public class LegalInkakeRequestValidationEvent : RequestValidationEvent
     {
-        public string Property { get; set; } 
-
-        public string Message { get; set; }
     }
 }
 
