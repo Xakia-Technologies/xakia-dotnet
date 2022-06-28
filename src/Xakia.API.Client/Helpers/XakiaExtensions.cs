@@ -83,7 +83,14 @@ namespace Xakia.API.Client.Helpers
             if (command.Type != CustomFieldType_i18n.CustomText && command.CustomText != null) yield return new RequestValidationEvent { Property = nameof(command.Type), Message = "If the custom field type is not Custom Text, then the Custom Text property must be null"} ;
             if (command.Type == CustomFieldType_i18n.CustomText && command.CustomText == null) yield return new RequestValidationEvent { Property = nameof(command.Type), Message = "If the custom field type is Custom Text, you must pass custom text properties" };
             if (command.CustomFieldDefinitionId == Guid.Empty) yield return new RequestValidationEvent { Property = nameof(command.CustomFieldDefinitionId), Message = "CustomFieldDefinitionId is a required field, user Guid.NewGuid() for new custom fields" };
-
+            if (command.CustomFieldListItemData != null)
+            {
+                foreach(var key in command.CustomFieldListItemData.SelectMany(cf => cf.Value).Select(cf => cf.Key).Distinct().ToList())
+                {
+                    if (!Language.Languages.Contains(key))
+                        yield return new RequestValidationEvent { Property = nameof(command.CustomFieldListItemData), Message = $"The custom field language {key} is invalid, review Language.cs for valid enteries." };
+                }
+            }
         }
 
 

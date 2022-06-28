@@ -29,7 +29,7 @@ namespace Xakia.API.Client
 
         public bool IsValid()
         {
-            return Created.AddSeconds(ExpiresIn) <= DateTime.UtcNow;
+            return Created.AddSeconds(ExpiresIn) >= DateTime.UtcNow;
         }
     }
 }
