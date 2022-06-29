@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using Xakia.API.Client.Exceptions;
 using Xakia.API.Client.Services.Admin.Contracts;
+using Xakia.API.Client.Services.Documents.Contracts;
 using Xakia.API.Client.Services.Matters.Contracts;
 
 namespace Xakia.API.Client.Helpers
@@ -54,6 +55,18 @@ namespace Xakia.API.Client.Helpers
             // optional required fields
             validationEvents.AddRange(ValidateOptionalRequiredFields(legalRequest));
 
+
+            return validationEvents;
+        }
+
+
+        public static List<LegalInkakeRequestValidationEvent> Validate(this DocumentContent document)
+        {
+            var validationEvents = new List<LegalInkakeRequestValidationEvent>();
+
+            if (string.IsNullOrWhiteSpace(document.Filename)) validationEvents.Add(new LegalInkakeRequestValidationEvent { Property = nameof(document.Filename), Message = "Filename is a required field." });
+            if (string.IsNullOrWhiteSpace(document.ContentType)) validationEvents.Add(new LegalInkakeRequestValidationEvent { Property = nameof(document.ContentType), Message = "Content Type is a required field." });
+            if (document.Stream == null) validationEvents.Add(new LegalInkakeRequestValidationEvent { Property = nameof(document.Stream), Message = "The document stream is required."});
 
             return validationEvents;
         }

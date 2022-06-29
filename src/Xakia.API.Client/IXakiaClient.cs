@@ -25,6 +25,8 @@ namespace Xakia.API.Client
         
         public Task RequestAsync<TContract>(HttpMethod method, string path, TContract payload, ICollection<DocumentContent> files, CancellationToken cancellationToken = default) where TContract : IContract;
 
+        public Task RequestAsync(HttpMethod method, string path, ICollection<DocumentContent> files, CancellationToken cancellationToken = default);
+
         public Task<T> RequestAsyncWithFile<T>(HttpMethod method, string path, DocumentMetadata documentMetadata, DocumentContent documentContent, CancellationToken cancellationToken = default);
     }
 

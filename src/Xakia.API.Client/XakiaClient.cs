@@ -75,6 +75,14 @@ namespace Xakia.API.Client
             await ExecuteRequestAsync(xakiaRequestMessage.HttpRequestMessage, cancellationToken);
         }
 
+        public async Task RequestAsync(HttpMethod method, string path,  ICollection<DocumentContent> files, CancellationToken cancellationToken = default)
+        {
+            Token = await AuthenticateAsync();
+            var xakiaRequestMessage = new XakiaRequest(XakiaClientOptions, method, path, Token);
+            xakiaRequestMessage.AddDocumentContent(files);
+            await ExecuteRequestAsync(xakiaRequestMessage.HttpRequestMessage, cancellationToken);
+        }
+
 
         public async Task<T> RequestAsyncWithFile<T>(HttpMethod method, string path, DocumentMetadata documentMetadata, DocumentContent documentContent, CancellationToken cancellationToken = default) 
         {
