@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xakia.API.Client.Exceptions;
 using Xakia.API.Client.Helpers;
+using Xakia.API.Client.Services.Documents.Contracts;
 using Xakia.API.Client.Services.Matters.Contracts;
 using Xakia.API.Client.Services.Matters.Queries;
 
@@ -66,6 +67,28 @@ namespace Xakia.API.Client.Services.Matters
 
             await _xakiaClient.RequestAsync(HttpMethod.Post, GetInstanceUrl("/v2/xakiagematter/{0}", legalRequestTypeId), legalRequest, cancellationToken);
             return legalRequestTypeId;
+        }
+
+
+        /// <summary>
+        /// Uploads a document to a Legal Request
+        /// </summary>
+        /// <param name="legalRequestId">The Legal Request Id</param>
+        /// <param name="document">A <c>DocumentContent</c> to upload</param>
+        /// <param name="cancellationToken">A <c>CancellationToken</c></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="LegalInkakeRequestValidationException"></exception>
+        public async Task CreateLegalRequestDocumentAsync(Guid legalRequestId, DocumentContent document, CancellationToken cancellationToken = default)
+        {
+            if (legalRequestId == Guid.Empty) throw new ArgumentException("Legal Request Id must be a valid Guid", nameof(legalRequestId));
+            _ = document ?? throw new ArgumentNullException(nameof(document));
+
+            var validationEvents = document.Validate();
+            if (validationEvents.Any()) throw new LegalInkakeRequestValidationException("Legal Intake document upload request failed validation.", validationEvents);
+
+            var files = new List<DocumentContent>() { document };
+            await _xakiaClient.RequestAsync(HttpMethod.Post, GetInstanceUrl("/v2/xakiagematter/{0}/documents", legalRequestId), files, cancellationToken);
         }
     }
 }
