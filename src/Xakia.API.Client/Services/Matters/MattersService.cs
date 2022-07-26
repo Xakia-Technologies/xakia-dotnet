@@ -22,6 +22,7 @@ namespace Xakia.API.Client.Services.Matters
 
         public MattersService(IXakiaClient xakiaClient) : base(xakiaClient) { }
 
+        #region Matters List
 
         /// <summary>
         /// Returns a list of matters filtered by <c>MattersQueryParams</c>
@@ -35,6 +36,10 @@ namespace Xakia.API.Client.Services.Matters
                 GetUrl("/v2/matters/list"), mattersQueryParams, cancellationToken);
         }
 
+        #endregion
+
+
+        #region Matters
 
         /// <summary>
         /// Returns a <c>MatterContract</c> from it's id
@@ -47,6 +52,23 @@ namespace Xakia.API.Client.Services.Matters
             return await _xakiaClient.RequestAsync<MatterContract>(HttpMethod.Get, GetInstanceUrl(BasePath, matterId), cancellationToken);
         }
 
+
+        /// <summary>
+        /// Update the values an existing Matter from the request payload.
+        /// </summary>
+        /// <param name="matterId">The Guid Matter Id to update</param>
+        /// <param name="request">The matters <c>UpdateMatterRequest</c> properties to update</param>
+        /// <param name="cancellationToken">A <c>CancellationToken</c></param>
+        /// <returns>A <c>CommandResult</c></returns>
+        public async Task<CommandResult> UpdateMatterAsync(Guid matterId, UpdateMatterRequest request, CancellationToken cancellationToken = default)
+        {
+            return await _xakiaClient.RequestAsync<CommandResult, UpdateMatterRequest>(HttpMethod.Put, GetInstanceUrl(BasePath, matterId), request, cancellationToken);
+        }
+
+        #endregion
+
+
+        #region Legal Requests
 
         /// <summary>
         /// Create a Legal Request from a <c>XakiageRequestTypeDetailResponse</c> template
@@ -90,5 +112,7 @@ namespace Xakia.API.Client.Services.Matters
             var files = new List<DocumentContent>() { document };
             await _xakiaClient.RequestAsync(HttpMethod.Post, GetInstanceUrl("/v2/xakiagematter/{0}/documents", legalRequestId), files, cancellationToken);
         }
+
+        #endregion
     }
 }
