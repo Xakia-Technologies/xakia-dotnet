@@ -50,6 +50,7 @@ namespace Xakia.API.Client
 
         private string GetRegion(XakiaRegion value) => value switch
         {
+            XakiaRegion.Test => "test-us",
             XakiaRegion.Staging => "staging-us",
             XakiaRegion.Australia => "au",
             XakiaRegion.Canada => "ca",
@@ -61,6 +62,7 @@ namespace Xakia.API.Client
 
         private string GetTokenRegion(XakiaRegion value) => value switch
         {
+            XakiaRegion.Test => "-test",
             XakiaRegion.Staging => "-staging",
             _ => ""
         };
@@ -68,6 +70,7 @@ namespace Xakia.API.Client
 
     public enum XakiaRegion
     {
+        Test,
         Staging,
         Australia,
         Canada,

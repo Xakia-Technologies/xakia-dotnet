@@ -127,9 +127,15 @@ namespace Xakia.API.Client.Services.Matters.Contracts
         public int? Currency { get; set; }
 
         /// <summary>
+        /// Deprecated. Use the CustomFieldPayload field instead..
         /// Custom fields responses assicated with the legal request
         /// </summary>
         public XakiageCustomFieldContract[] CustomFields { get; set; }
+
+        /// <summary>
+        /// Custom fields.
+        /// </summary>
+        public CustomFieldPayload CustomFieldPayload { get; set; }
 
         /// <summary>
         /// Relative size rating.

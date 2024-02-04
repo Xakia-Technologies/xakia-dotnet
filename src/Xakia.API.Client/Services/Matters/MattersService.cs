@@ -52,7 +52,6 @@ namespace Xakia.API.Client.Services.Matters
             return await _xakiaClient.RequestAsync<MatterContract>(HttpMethod.Get, GetInstanceUrl(BasePath, matterId), cancellationToken);
         }
 
-
         /// <summary>
         /// Update the values an existing Matter from the request payload.
         /// </summary>
@@ -91,7 +90,6 @@ namespace Xakia.API.Client.Services.Matters
             return legalRequestTypeId;
         }
 
-
         /// <summary>
         /// Uploads a document to a Legal Request
         /// </summary>
@@ -111,6 +109,17 @@ namespace Xakia.API.Client.Services.Matters
 
             var files = new List<DocumentContent>() { document };
             await _xakiaClient.RequestAsync(HttpMethod.Post, GetInstanceUrl("/v2/xakiagematter/{0}/documents", legalRequestId), files, cancellationToken);
+        }
+
+        /// <summary>
+        /// Returns a <c>XakiageContract</c> from it's id
+        /// </summary>
+        /// <param name="legalRequestId">Guid legal request Id</param>
+        /// <param name="cancellationToken">A <c>CancellationToken</c></param>
+        /// <returns>A <c>XakiageContract</c></returns>
+        public async Task<XakiageContract> GetLegalRequestAsync(Guid legalRequestId, CancellationToken cancellationToken = default)
+        {
+            return await _xakiaClient.RequestAsync<XakiageContract>(HttpMethod.Get, GetInstanceUrl("/v2/xakiagematter/{0}", legalRequestId), cancellationToken);
         }
 
         #endregion
