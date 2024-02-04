@@ -64,8 +64,19 @@ namespace Xakia.API.Client.Services.Matters
             return await _xakiaClient.RequestAsync<CommandResult, UpdateMatterRequest>(HttpMethod.Put, GetInstanceUrl(BasePath, matterId), request, cancellationToken);
         }
 
-        #endregion
+        /// <summary>
+        /// Update the custom field values on an existing Matter.
+        /// </summary>
+        /// <param name="matterId">The Guid Matter Id to update</param>
+        /// <param name="request">The matters <c>UpdateMatterCustomFieldsRequest</c> properties to update</param>
+        /// <param name="cancellationToken">A <c>CancellationToken</c></param>
+        /// <returns>A <c>CommandResult</c></returns>
+        public async Task<CommandResult> UpdateMatterCustomFieldsAsync(Guid matterId, UpdateMatterCustomFieldsRequest request, CancellationToken cancellationToken = default)
+        {
+            return await _xakiaClient.RequestAsync<CommandResult, UpdateMatterCustomFieldsRequest>(HttpMethod.Put, GetInstanceUrl(BasePath+ "/customfields", matterId), request, cancellationToken);
+        }
 
+        #endregion
 
         #region Legal Requests
 
