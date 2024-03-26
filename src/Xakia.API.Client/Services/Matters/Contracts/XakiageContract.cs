@@ -112,9 +112,9 @@ namespace Xakia.API.Client.Services.Matters.Contracts
         public ICollection<AttachedDocument> AttachedDocumentDetails { get; set; } = new List<AttachedDocument>();
 
         /// <summary>
-        /// Number assigned to xakiage
+        /// Number assigned to xakiage, e.g. R1
         /// </summary>
-        public int XakiageNumber { get; set; }
+        public string XakiageNumber { get; set; }
 
         /// <summary>
         /// Date and time of which the legal request was submitted
